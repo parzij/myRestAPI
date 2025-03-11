@@ -42,35 +42,13 @@ func PostHandler(c echo.Context) error {
 	})
 }
 
-func PutHandler(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil || id < 0 || id >= len(messages) {
-		return c.JSON(http.StatusBadRequest, Response{
-			Status:  "Error",
-			Message: "Invalid message ID",
-		})
-	}
-	var updatedMessage Message
-	if err := c.Bind(&updatedMessage); err != nil {
-		return c.JSON(http.StatusBadRequest, Response{
-			Status:  "Error",
-			Message: "Could not update the message",
-		})
-	}
-	messages[id] = updatedMessage
-	return c.JSON(http.StatusOK, Response{
-		Status:  "Success",
-		Message: "Message updated successfully",
-	})
-}
 
 
 func main() {
 	ech := echo.New()
 
 	ech.GET("/messages", Gethandler)
-	ech.POST("/messages", PostHandler)
-	ech.PUT("/messages/:id", PutHandler)
+	ech.POST("/messages", PostHandler
 
 	ech.Logger.Fatal(ech.Start(":8080"))
 }
