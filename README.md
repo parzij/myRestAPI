@@ -1,154 +1,183 @@
-# Простой REST API с использованием Echo (Golang)
+# Простой REST API с использованием Echo
 
-Это базовый проект REST API на языке Go с использованием веб-фреймворка **Echo**. API поддерживает простые операции CRUD (создание, чтение, обновление, удаление) с данными в формате JSON.
+Это базовый проект REST API на языке Go с использованием веб-фреймворка **Echo**. API поддерживает простые операции CRUD (Create, Read, Update, Delete) с данными в формате JSON и включает Swagger-документацию.
 
-## Технологии
+## 🚀 Технологии
 
-- Golang
-- Echo framework
-- JSON
+- **Golang** - язык программирования
+- **Echo v4** - веб-фреймворк
+- **Swaggo/Swag** - генерация Swagger документации
+- **Swagger UI** - интерактивная документация API
+- **Godotenv** - загрузка переменных окружения
+- **JSON** - формат обмена данными
 
-## Структура проекта
+## 📁 Структура проекта
 
-- `main.go` — основной файл с логикой API.
-- Используем фреймворк Echo для обработки HTTP-запросов.
-
-## Установка и запуск
-
-1. Убедитесь, что у вас установлен Go.
-
-2. Склонируйте репозиторий:
-
-```bash
-git clone <url вашего репозитория>
-cd <ваша папка>
+```
+MYRESTAPI
+├── cmd/api
+│   └── main.go              # Точка входа в приложение
+├── docs
+│   ├── docs.go              # Автогенерируемый Swagger
+│   ├── swagger.json         
+│   └── swagger.yaml         
+├── internal
+│   ├── handler
+│   │   └── handler.go       # Обработчики HTTP запросов
+│   ├── models
+│   │   └── models.go        # Модели данных
+│   └── router
+│       └── router.go        # Настройка маршрутов
+├── .env                     
+├── .gitignore               
+├── go.mod                   
+├── go.sum                   
+├── LICENSE                  
+└── README.md                
 ```
 
-3. Установите зависимости:
+## 🔌 Доступные эндпоинты
 
-```bash
-go mod init echo_api
-go get github.com/labstack/echo/v4
-go get github.com/labstack/gommon/log
-go mod tidy
-```
-
-3. Запустите сервер:
-
-```bash
-go run main.go
-```
-
-API будет доступен на `http://localhost:8000`.
-
-## Доступные запросы
-
-### Получение списка сообщений
+### 📥 Получение всех сообщений
 
 ```http
-GET http://localhost:8000/messages
+GET http://localhost:port/messages
 ```
 
-### Добавление нового сообщения
+**Ответ (200 OK):**
+```json
+[
+  {
+    "text": "Первое сообщение"
+  },
+  {
+    "text": "Второе сообщение"
+  }
+]
+```
 
-```http
-POST http://localhost:8000/messages
-Content-Type: application/json
-
+**Ответ (404 Not Found):**
+```json
 {
-  "text": "Ваше сообщение"
+  "status": "Error",
+  "message": "No messages found"
 }
 ```
 
-### Обновление существующего сообщения
+---
+
+### ➕ Создание сообщения
 
 ```http
-PUT http://localhost:8000/messages/{id}
+POST http://localhost:port/messages
 Content-Type: application/json
 
 {
-  "text": "Обновлённый текст сообщения"
+  "text": "Новое сообщение"
 }
 ```
 
-Где `{id}` – это индекс сообщения в списке (нумерация с 0).
-
-### Удаление сообщения
-
-```http
-DELETE http://localhost:8000/messages/{id}
+**Ответ (200 OK):**
+```json
+{
+  "status": "Success",
+  "message": "Message added successfully"
+}
 ```
 
-Где `{id}` – индекс сообщения, которое требуется удалить.
+**Ответ (400 Bad Request):**
+```json
+{
+  "status": "Error",
+  "message": "Could not add the message"
+}
+```
 
-## Структура кода
+---
 
-Проект имеет следующие основные компоненты:
+### ✏️ Обновление сообщения
 
-- Структура данных сообщения:
+```http
+PUT http://localhost:port/messages/0
+Content-Type: application/json
 
+{
+  "text": "Обновлённый текст"
+}
+```
+
+Где `0` - индекс сообщения в массиве.
+
+**Ответ (200 OK):**
+```json
+{
+  "status": "Success",
+  "message": "Message updated successfully"
+}
+```
+
+**Ответ (400 Bad Request):**
+```json
+{
+  "status": "Error",
+  "message": "Invalid message ID"
+}
+```
+
+---
+
+### 🗑️ Удаление сообщения
+
+```http
+DELETE http://localhost:port/messages/0
+```
+
+Где `0` - индекс сообщения для удаления.
+
+**Ответ (200 OK):**
+```json
+{
+  "status": "Success",
+  "message": "Message deleted successfully"
+}
+```
+
+**Ответ (400 Bad Request):**
+```json
+{
+  "status": "Error",
+  "message": "Invalid message ID"
+}
+```
+
+## 🏗️ Архитектура проекта
+
+### Модульная структура
+
+Проект разделён на логические модули:
+
+- **`cmd/api/main.go`** - точка входа, инициализация сервера и роутера
+- **`internal/handler/handler.go`** - обработчики HTTP запросов (бизнес-логика)
+- **`internal/models/models.go`** - структуры данных и глобальные переменные
+- **`internal/router/router.go`** - настройка маршрутизации
+- **`docs/`** - автогенерируемая Swagger документация
+
+### Модели данных
+
+**Message** - структура сообщения:
 ```go
 type Message struct {
-	Text string `json:"text"`
+    Text string `json:"text"`
 }
 ```
 
-- Структура ответа сервера:
-
+**Response** - структура ответа API:
 ```go
 type Response struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
+    Status  string `json:"status"`
+    Message string `json:"message"`
 }
 ```
+##  Лицензия
 
-- Примеры обработчиков запросов:
-
-#### GET-запрос
-
-```go
-func Gethandler(c echo.Context) error {
-	if len(messages) == 0 {
-		return c.JSON(http.StatusNotFound, Response{
-		Status:  "Error",
-		Message: "No messages found",
-	})
-}
-	return c.JSON(http.StatusOK, messages)
-}
-```
-
-- POST-запрос добавляет сообщение в список:
-
-```go
-func PostHandler(c echo.Context) error {
-	var message Message
-	if err := c.Bind(&message); err != nil {
-		return c.JSON(http.StatusBadRequest, Response{
-			Status:  "Error",
-			Message: "Could not add the message",
-	})
-}
-	messages = append(messages, message)
-	return c.JSON(http.StatusOK, Response{
-		Status:  "Success",
-		Message: "Message added successfully",
-	})
-}
-```
-
-## Обработка ошибок
-
-Все методы возвращают JSON-ответы с соответствующими статусами HTTP и понятными сообщениями об ошибках.
-
-## Использование в веб-разработке
-
-Данный API можно использовать как backend для приложений:
-- Реализуйте клиентский интерфейс на React или другом JavaScript-фреймворке.
-- Используйте API для интеграции с мобильными приложениями.
-- Можно расширить функционал, подключив базу данных для хранения данных вместо временного массива.
-
-## Лицензия
-
-Проект открыт для использования и модификаций.
-
+Проект открыт для использования и модификаций. См. файл [LICENSE](LICENSE) для подробностей.
