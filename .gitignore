@@ -1,0 +1,73 @@
+# Переменные окружения
+.env
+.env.*
+!.env.example
+*.local
+
+# Бинарные файлы и сборка
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.app
+bin/
+build/
+dist/
+
+
+# Зависимости и модули
+vendor/
+go.sum
+
+# Кэш компилятора и сборки
+*.o
+*.a
+*.cgo1.go
+*.cgo2.c
+*_testmain.go
+cfg.c
+cfg.h
+
+# Отладочные символы
+*.dSYM/
+
+# Профилирование и покрытие
+*.cover
+*.prof
+*.pprof
+cpu.pprof
+mem.pprof
+trace.pprof
+block.pprof
+mutex.pprof
+coverage.out
+
+# Файлы генерации 
+*.pb.go
+*.gen.go
+*_generated.go
+
+# Swagger docs
+/docs/swagger.json
+/docs/swagger.yaml
+/docs/*.md
+
+# Настройки рабочего пространства
+.vscode/*
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+# История редактора
+*.code-workspace
+.history/
+
+# Linux
+*~
+.fuse_hidden*
+.Trash-*
+.nfs*
